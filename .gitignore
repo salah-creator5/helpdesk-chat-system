@@ -1,0 +1,19 @@
+# Dependency directories
+node_modules/
+venv/
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE settings
+.idea/
+.vscode/settings.json
+
+# Local database (optional, can be committed if initial demo data is needed)
+# db.sqlite3
+
+# Build outputs
+dist/
+build/
