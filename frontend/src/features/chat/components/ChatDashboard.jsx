@@ -4,9 +4,9 @@ import { ChatWindow } from './ChatWindow';
 import styles from '../styles/chat.module.css';
 
 /**
- * ChatDashboard - Back Office Helpdesk Chat management workspace for Agents.
+ * ChatDashboard - Espace de travail de gestion du chat Helpdesk Back Office pour les agents.
  * 
- * @param {object} user - The logged-in Agent user object.
+ * @param {object} user - L'objet utilisateur Agent connecté.
  */
 export function ChatDashboard({ user }) {
   const {
@@ -21,9 +21,9 @@ export function ChatDashboard({ user }) {
     updateStatus,
   } = useChat(user, { isWidgetOpen: true });
 
-  // Poll conversation list periodically to capture incoming user chats
+  // Interroger périodiquement la liste des conversations pour capturer les nouveaux chats des utilisateurs
   useEffect(() => {
-    fetchConversations(); // Initial fetch
+    fetchConversations(); // Récupération initiale
     
     const interval = setInterval(() => {
       fetchConversations();
@@ -34,7 +34,7 @@ export function ChatDashboard({ user }) {
 
   return (
     <div className={styles.dashboardContainer}>
-      {/* Sidebar: Conversation List */}
+      {/* Barre latérale : Liste des conversations */}
       <div className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
           <h3 className={styles.sidebarTitle}>Demandes Client</h3>
@@ -47,7 +47,7 @@ export function ChatDashboard({ user }) {
           ) : (
             conversations.map((conv) => {
               const isSelected = activeConversation?.id === conv.id;
-              // Check for unread indicators
+              // Vérifier les indicateurs de messages non lus
               const hasUnread = conv.last_message && 
                                 !conv.last_message.is_read && 
                                 conv.last_message.sender !== user?.id;
@@ -95,7 +95,7 @@ export function ChatDashboard({ user }) {
         </div>
       </div>
 
-      {/* Detail Panel: Chat Window */}
+      {/* Panneau de détail : Fenêtre de chat */}
       <div style={{ flex: 1, height: '100%' }}>
         {activeConversation ? (
           <ChatWindow
@@ -105,7 +105,7 @@ export function ChatDashboard({ user }) {
             onSendMessage={sendMessage}
             headerActions={
               <div className={styles.agentActions}>
-                {/* Self assign button */}
+                {/* Bouton s'assigner */}
                 {(!activeConversation.agent || activeConversation.agent !== user?.id) && (
                   <button
                     className={`${styles.actionButton} ${styles.primary}`}
@@ -114,7 +114,7 @@ export function ChatDashboard({ user }) {
                     S'assigner
                   </button>
                 )}
-                {/* Resolve button */}
+                {/* Bouton résoudre */}
                 {activeConversation.status !== 'RESOLVED' && activeConversation.status !== 'CLOSED' && (
                   <button
                     className={`${styles.actionButton} ${styles.outline}`}
@@ -123,7 +123,7 @@ export function ChatDashboard({ user }) {
                     Résoudre
                   </button>
                 )}
-                {/* Reopen / Close button */}
+                {/* Bouton fermer */}
                 {activeConversation.status === 'RESOLVED' && (
                   <button
                     className={`${styles.actionButton} ${styles.outline}`}

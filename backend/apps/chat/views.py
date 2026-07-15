@@ -12,9 +12,9 @@ User = get_user_model()
 
 class DemoAuthentication(BaseAuthentication):
     """
-    Custom authentication for development/demo.
-    Allows authenticating via X-User-ID or X-Username headers,
-    or fallback query parameters.
+    Authentification personnalisée pour le développement et la démo.
+    Permet de s'authentifier via les en-têtes X-User-ID ou X-Username,
+    ou par les paramètres de requête en repli.
     """
     def authenticate(self, request):
         user_id = request.headers.get('X-User-ID') or request.query_params.get('user_id')
@@ -50,11 +50,11 @@ class ConversationViewSet(viewsets.ModelViewSet):
             return Conversation.objects.none()
 
         role = self.request.headers.get('X-User-Role') or self.request.query_params.get('role')
-        # If user is staff or role is explicitly 'agent', they see all conversations
+        # Si l'utilisateur fait partie de l'équipe ou si le rôle est explicitement 'agent', il voit toutes les conversations
         if role == 'agent' or user.is_staff:
             return Conversation.objects.all()
         else:
-            # Normal client only sees their own conversations
+            # Un client normal ne voit que ses propres conversations
             return Conversation.objects.filter(client=user)
 
     def create(self, request, *args, **kwargs):
@@ -62,7 +62,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
         if not user.is_authenticated:
             return Response({"detail": "Authentication required. Provide X-User-ID or X-Username header."}, status=status.HTTP_401_UNAUTHORIZED)
 
-        # Re-use active conversation if one exists for this client
+        # Réutiliser la conversation active si elle existe déjà pour ce client
         active_conv = Conversation.objects.filter(
             client=user, 
             status__in=['OPEN', 'PENDING']
@@ -72,7 +72,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(active_conv)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        # Otherwise, create a new one
+        # Sinon, en créer une nouvelle
         conversation = Conversation.objects.create(client=user, status='OPEN')
         serializer = self.get_serializer(conversation)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -104,7 +104,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
         if not user.is_authenticated:
             return Response({"detail": "Authentication required"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        # Mark all messages sent by OTHERS as read
+        # Marquer tous les messages envoyés par d'AUTRES utilisateurs comme lus
         unread_messages = conversation.messages.filter(is_read=False).exclude(sender=user)
         count = unread_messages.count()
         unread_messages.update(is_read=True)
@@ -132,7 +132,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         except (Conversation.DoesNotExist, ValueError):
             return Message.objects.none()
 
-        # Check access permission
+        # Vérifier les autorisations d'accès
         role = self.request.headers.get('X-User-Role') or self.request.query_params.get('role')
         is_agent = (role == 'agent' or user.is_staff)
         
@@ -141,7 +141,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 
         queryset = Message.objects.filter(conversation=conversation)
 
-        # Short Polling filter: get messages created after a specific message id
+        # Filtre pour le Short Polling : obtenir les messages créés après l'ID d'un message spécifique
         after_id = self.request.query_params.get('after')
         if after_id:
             try:
@@ -161,20 +161,20 @@ class MessageViewSet(viewsets.ModelViewSet):
         except (Conversation.DoesNotExist, ValueError):
             raise serializers.ValidationError({"conversation": "Invalid or missing conversation ID"})
 
-        # Save the message with the authenticated sender
+        # Sauvegarder le message avec l'expéditeur authentifié
         serializer.save(sender=user)
 
-        # Update conversation status and updated_at timestamp
+        # Mettre à jour le statut de la conversation et l'horodatage updated_at
         role = self.request.headers.get('X-User-Role') or self.request.query_params.get('role')
         is_agent = (role == 'agent' or user.is_staff)
         
         if is_agent:
             conversation.status = 'PENDING'
-            # If conversation had no agent assigned, auto-assign it
+            # Si la conversation n'a pas d'agent assigné, l'assigner automatiquement
             if not conversation.agent:
                 conversation.agent = user
         else:
-            # If client sends a message, set status to OPEN
+            # Si le client envoie un message, définir le statut sur OPEN
             conversation.status = 'OPEN'
 
         conversation.save()  # Auto updates updated_at
@@ -182,7 +182,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 
 class DemoUserViewSet(viewsets.ViewSet):
     """
-    Helper endpoints for managing and listing demo users (agents and clients).
+    Points de terminaison d'aide pour gérer et lister les utilisateurs de démo (agents et clients).
     """
     permission_classes = [AllowAny]
 

@@ -5,9 +5,9 @@ import { chatApi } from '../services/chatApi';
 import styles from '../styles/chat.module.css';
 
 /**
- * ChatWidget - Floating Widget for the Client-side integration.
+ * ChatWidget - Widget flottant pour l'intégration côté Client.
  * 
- * @param {object} user - The logged-in Client user object.
+ * @param {object} user - L'objet utilisateur Client connecté.
  */
 export function ChatWidget({ user }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +21,7 @@ export function ChatWidget({ user }) {
     fetchConversations
   } = useChat(user, { isWidgetOpen: isOpen });
 
-  // Mark messages as read when opening the widget
+  // Marquer les messages comme lus à l'ouverture du widget
   useEffect(() => {
     if (isOpen && activeConversation?.id) {
       chatApi.markAsRead(activeConversation.id, user)
@@ -30,7 +30,7 @@ export function ChatWidget({ user }) {
     }
   }, [isOpen, activeConversation?.id, user, fetchConversations]);
 
-  // Determine if there are unread messages when the widget is closed
+  // Déterminer s'il y a des messages non lus lorsque le widget est fermé
   const hasUnread = isOpen 
     ? false 
     : messages.some(m => !m.is_read && m.sender !== user?.id);

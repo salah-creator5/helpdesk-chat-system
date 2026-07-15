@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:8000/api/chat';
 
-// Create a configured axios instance
+// Créer une instance configurée d'Axios
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -11,20 +11,20 @@ const api = axios.create({
 });
 
 /**
- * Helper to construct headers based on user context
+ * Assistant pour construire les en-têtes (headers) basés sur le contexte de l'utilisateur
  */
 const getHeaders = (user) => {
   const headers = {};
   if (user) {
     if (user.id) headers['X-User-ID'] = user.id;
     if (user.username) headers['X-Username'] = user.username;
-    if (user.role) headers['X-User-Role'] = user.role; // 'agent' or 'client'
+    if (user.role) headers['X-User-Role'] = user.role; // 'agent' ou 'client'
   }
   return headers;
 };
 
 export const chatApi = {
-  // --- Demo Users API ---
+  // --- API Utilisateurs Démo ---
   getDemoUsers: async () => {
     const response = await api.get('/users/');
     return response.data;
@@ -35,7 +35,7 @@ export const chatApi = {
     return response.data;
   },
 
-  // --- Conversations API ---
+  // --- API Conversations ---
   getConversations: async (user) => {
     const response = await api.get('/conversations/', {
       headers: getHeaders(user),
@@ -77,7 +77,7 @@ export const chatApi = {
     return response.data;
   },
 
-  // --- Messages API ---
+  // --- API Messages ---
   getMessages: async (conversationId, user, afterId = null) => {
     const params = { conversation: conversationId };
     if (afterId) {

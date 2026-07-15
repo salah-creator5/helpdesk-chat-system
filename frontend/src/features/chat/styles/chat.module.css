@@ -1,6 +1,6 @@
-/* Chat Module Styles - Premium Design System */
+/* Styles du Module de Chat - Système de Design Premium */
 
-/* Floating Widget (Client) */
+/* Widget Flottant (Client) */
 .widgetContainer {
   position: fixed;
   bottom: 24px;
@@ -63,7 +63,7 @@
   animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Chat Header */
+/* En-tête du Chat */
 .chatHeader {
   background: linear-gradient(135deg, var(--neutral-900), var(--neutral-800));
   color: white;
@@ -135,7 +135,7 @@
   opacity: 1;
 }
 
-/* Messages Area */
+/* Zone des Messages */
 .messagesContainer {
   flex: 1;
   overflow-y: auto;
@@ -170,7 +170,7 @@
   justify-content: center;
 }
 
-/* Individual Message Bubble */
+/* Bulle de Message Individuelle */
 .messageWrapper {
   display: flex;
   flex-direction: column;
@@ -225,7 +225,7 @@
   color: var(--neutral-400);
 }
 
-/* Chat Input Bar */
+/* Barre de Saisie du Chat */
 .inputContainer {
   padding: 16px;
   background-color: white;
@@ -268,7 +268,7 @@
   cursor: not-allowed;
 }
 
-/* Agent Dashboard - Split Pane */
+/* Tableau de Bord de l'Agent - Séparateur de Volets */
 .dashboardContainer {
   display: flex;
   height: calc(100vh - 80px);
@@ -281,7 +281,7 @@
   font-family: 'Inter', system-ui, sans-serif;
 }
 
-/* Sidebar List */
+/* Liste de la Barre Latérale */
 .sidebar {
   width: 320px;
   border-right: 1px solid var(--neutral-200);
@@ -392,7 +392,7 @@
   box-shadow: 0 0 6px var(--primary);
 }
 
-/* Detail Area (Agent view) */
+/* Zone de Détail (Vue Agent) */
 .detailArea {
   flex: 1;
   display: flex;
@@ -433,7 +433,7 @@
   background-color: var(--neutral-100);
 }
 
-/* Keyframes */
+/* Animations (Keyframes) */
 @keyframes slideIn {
   from {
     opacity: 0;

@@ -5,7 +5,7 @@ import styles from '../styles/chat.module.css';
 export function MessageList({ messages, currentUser }) {
   const containerRef = useRef(null);
 
-  // Auto scroll to bottom when messages list updates
+  // Défilement automatique vers le bas lorsque la liste des messages est mise à jour
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;

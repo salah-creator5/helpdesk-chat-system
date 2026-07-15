@@ -3,9 +3,9 @@ import { chatApi } from '../services/chatApi';
 import { useChatPolling } from './useChatPolling';
 
 /**
- * Custom hook to manage all chat interactions, conversation states, and operations.
+ * Hook personnalisé pour gérer toutes les interactions du chat, les états de conversation et les opérations.
  * 
- * @param {object} user - Authenticated user { id, username, role }.
+ * @param {object} user - Utilisateur authentifié { id, username, role }.
  */
 export function useChat(user, options = {}) {
   const { isWidgetOpen = false } = options;
@@ -14,14 +14,14 @@ export function useChat(user, options = {}) {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch list of conversations
+  // Récupérer la liste des conversations
   const fetchConversations = useCallback(async () => {
     if (!user) return;
     try {
       const data = await chatApi.getConversations(user);
       setConversations(data);
       
-      // Auto-set active conversation for client if they have an ongoing one
+      // Sélectionner automatiquement la conversation active pour le client s'il en a une en cours
       if (user.role === 'client') {
         const active = data.find(c => c.status === 'OPEN' || c.status === 'PENDING');
         if (active) {
@@ -33,7 +33,7 @@ export function useChat(user, options = {}) {
     }
   }, [user?.id, user?.role]);
 
-  // Load conversations when user state changes
+  // Charger les conversations lorsque l'état de l'utilisateur change
   useEffect(() => {
     fetchConversations();
     if (!user) {
@@ -42,7 +42,7 @@ export function useChat(user, options = {}) {
     }
   }, [user?.id, user?.role, fetchConversations]);
 
-  // Create or load client conversation
+  // Créer ou charger la conversation du client
   const startConversation = useCallback(async () => {
     if (!user) return;
     setIsLoading(true);
@@ -58,49 +58,49 @@ export function useChat(user, options = {}) {
     }
   }, [user, fetchConversations]);
 
-  // Send message in current conversation
+  // Envoyer un message dans la conversation actuelle
   const sendMessage = useCallback(async (content) => {
     if (!activeConversation || !user) return;
     try {
       const newMsg = await chatApi.sendMessage(activeConversation.id, content, user);
       
-      // Optimistically append new message if it doesn't already exist
+      // Ajout optimiste du nouveau message s'il n'existe pas déjà
       setMessages((prev) => {
         if (prev.some((m) => m.id === newMsg.id)) return prev;
         return [...prev, newMsg];
       });
 
-      // Update conversation list preview
+      // Mettre à jour l'aperçu de la liste des conversations
       fetchConversations();
     } catch (error) {
       console.error('Error sending message:', error);
     }
   }, [activeConversation?.id, user, fetchConversations]);
 
-  // Merge newly polled messages
+  // Fusionner les nouveaux messages récupérés par polling
   const handleIncomingMessages = useCallback((newMsgs, isInitial) => {
     setMessages((prev) => {
       if (isInitial) {
         return newMsgs;
       }
       
-      // Deduplicate messages
+      // Dédupliquer les messages
       const existingIds = new Set(prev.map((m) => m.id));
       const filtered = newMsgs.filter((m) => !existingIds.has(m.id));
       return [...prev, ...filtered];
     });
 
-    // Auto-mark as read if active conversation is visible and new messages are from others
+    // Marquer automatiquement comme lu si la conversation active est visible et que les nouveaux messages proviennent d'autres utilisateurs
     const isChatVisible = user?.role === 'agent' ? true : isWidgetOpen;
 
     if (activeConversation && isChatVisible && newMsgs.some((m) => m.sender !== user.id)) {
       chatApi.markAsRead(activeConversation.id, user)
-        .then(() => fetchConversations()) // Refresh conversation list to remove unread state
+        .then(() => fetchConversations()) // Rafraîchir la liste des conversations pour supprimer l'état non lu
         .catch((err) => console.error('Failed to mark read:', err));
     }
   }, [activeConversation?.id, user?.id, isWidgetOpen, fetchConversations]);
 
-  // Set up polling for the active conversation
+  // Configurer le polling pour la conversation active
   useChatPolling(
     activeConversation?.id,
     user,
@@ -109,14 +109,14 @@ export function useChat(user, options = {}) {
     !!activeConversation?.id
   );
 
-  // Self-assign conversation to agent
+  // S'assigner la conversation (pour l'agent)
   const assignAgent = useCallback(async (conversationId, agentId = null) => {
     if (!user) return;
     const targetAgentId = agentId || user.id;
     try {
       const updatedConv = await chatApi.assignAgent(conversationId, targetAgentId, user);
       
-      // Sync active conversation state if current
+      // Synchroniser l'état de la conversation active si elle correspond
       if (activeConversation && activeConversation.id === conversationId) {
         setActiveConversation(updatedConv);
       }
@@ -126,10 +126,10 @@ export function useChat(user, options = {}) {
     }
   }, [activeConversation?.id, user, fetchConversations]);
 
-  // Select active conversation (specifically for Agents)
+  // Sélectionner la conversation active (spécifiquement pour les agents)
   const selectConversation = useCallback((conv) => {
     setActiveConversation(conv);
-    setMessages([]); // Clear messages to let useChatPolling run initial fetch
+    setMessages([]); // Effacer les messages pour permettre au polling de faire sa récupération initiale
     
     if (conv && user) {
       chatApi.markAsRead(conv.id, user)
@@ -138,7 +138,7 @@ export function useChat(user, options = {}) {
     }
   }, [user, fetchConversations]);
 
-  // Update status of conversation (e.g. to RESOLVED or CLOSED)
+  // Mettre à jour le statut de la conversation (ex. RESOLVED ou CLOSED)
   const updateStatus = useCallback(async (conversationId, newStatus) => {
     if (!user) return;
     try {

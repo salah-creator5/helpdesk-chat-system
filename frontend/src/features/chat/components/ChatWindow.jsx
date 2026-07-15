@@ -39,7 +39,7 @@ export function ChatWindow({
 
   return (
     <div className={styles.detailArea} style={{ height: '100%' }}>
-      {/* Chat Header */}
+      {/* En-tête du chat */}
       <div className={styles.chatHeader}>
         <div className={styles.headerInfo}>
           <div className={styles.avatar}>
@@ -64,10 +64,10 @@ export function ChatWindow({
         </div>
       </div>
 
-      {/* Messages */}
+      {/* Liste des messages */}
       <MessageList messages={messages} currentUser={currentUser} />
 
-      {/* Input */}
+      {/* Zone de saisie */}
       <MessageInput onSendMessage={onSendMessage} />
     </div>
   );

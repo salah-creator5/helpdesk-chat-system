@@ -8,13 +8,13 @@ function App() {
   const [isClientLoggedIn, setIsClientLoggedIn] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState('checking');
 
-  // Verify backend availability and auto-initialize the Agent
+  // Vérifier la disponibilité du backend et initialiser automatiquement l'agent
   useEffect(() => {
     async function initDemo() {
       try {
         setConnectionStatus('checking');
         
-        // Auto-create/retrieve Agent_Sofia in the backend on startup
+        // Créer ou récupérer automatiquement l'agent Agent_Sofia dans le backend au démarrage
         const resAgent = await chatApi.createDemoUser(agentUser.username, 'agent');
         setAgentUser(prev => ({
           ...prev,
@@ -56,7 +56,7 @@ function App() {
     setIsClientLoggedIn(false);
   };
 
-  // 1. Role Selection Menu
+  // 1. Menu de sélection des rôles
   if (view === 'menu') {
     return (
       <div style={{ 
@@ -82,7 +82,7 @@ function App() {
           </p>
         </div>
 
-        {/* Roles Selection Cards */}
+        {/* Cartes de sélection des rôles */}
         <div style={{ 
           display: 'flex', 
           gap: '24px', 
@@ -91,7 +91,7 @@ function App() {
           flexWrap: 'wrap',
           justifyContent: 'center'
         }}>
-          {/* Card: Espace Client */}
+          {/* Carte : Espace Client */}
           <div 
             onClick={() => setView('client')}
             style={{ 
@@ -123,7 +123,7 @@ function App() {
             </div>
           </div>
 
-          {/* Card: Back Office Agent */}
+          {/* Carte : Back Office Agent */}
           <div 
             onClick={() => setView('agent')}
             style={{ 
@@ -156,7 +156,7 @@ function App() {
           </div>
         </div>
 
-        {/* API Status Info */}
+        {/* Informations sur le statut de l'API */}
         <div style={{ marginTop: '40px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#cbd5e1' }}>
           <span style={{ 
             width: '8px', 
@@ -172,9 +172,9 @@ function App() {
     );
   }
 
-  // 2. Client Portal View
+  // 2. Vue du portail Client
   if (view === 'client') {
-    // If not logged in, show Espace Client Login Form
+    // S'il n'est pas connecté, afficher le formulaire de connexion de l'Espace Client
     if (!isClientLoggedIn) {
       return (
         <div style={{ 
@@ -270,10 +270,10 @@ function App() {
       );
     }
 
-    // If logged in, show Espace Client Dashboard
+    // S'il est connecté, afficher le tableau de bord de l'Espace Client
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#f8fafc', color: '#1e293b', fontFamily: 'Inter, sans-serif' }}>
-        {/* Navigation Bar */}
+        {/* Barre de navigation */}
         <header style={{ 
           padding: '16px 24px', 
           backgroundColor: 'white', 
@@ -319,7 +319,7 @@ function App() {
           </div>
         </header>
 
-        {/* Mock Host Client Panel */}
+        {/* Panneau client hôte factice */}
         <main style={{ flex: 1, padding: '40px 24px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <div style={{ maxWidth: '600px', width: '100%', backgroundColor: 'white', padding: '32px', borderRadius: '16px', boxShadow: '0 4px 10px rgba(0, 0, 0, 0.05)', border: '1px solid #f1f5f9' }}>
             <span style={{ fontSize: '11px', fontWeight: 700, color: '#4f46e5', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Portail Client Hôte</span>
@@ -336,18 +336,18 @@ function App() {
           </div>
         </main>
 
-        {/* Integration of Chat Widget */}
+        {/* Intégration du Widget de chat */}
         {connectionStatus === 'connected' && <ChatWidget user={clientUser} />}
       </div>
     );
   }
 
-  // 3. Agent Back Office View
+  // 3. Vue Back Office Agent
   if (view === 'agent') {
-    // If logged in, show Agent Dashboard (No login form needed for agent)
+    // S'il est connecté, afficher le tableau de bord de l'agent (pas de formulaire de connexion requis pour l'agent)
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#0f172a', color: 'white', fontFamily: 'Inter, sans-serif' }}>
-        {/* Navigation Bar */}
+        {/* Barre de navigation */}
         <header style={{ 
           padding: '16px 24px', 
           backgroundColor: '#1e293b', 
@@ -377,7 +377,7 @@ function App() {
           </div>
         </header>
 
-        {/* Workspace: Agent Chat Dashboard */}
+        {/* Espace de travail : Tableau de bord de chat de l'agent */}
         <main style={{ flex: 1, padding: '24px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <ChatDashboard user={agentUser} />
         </main>

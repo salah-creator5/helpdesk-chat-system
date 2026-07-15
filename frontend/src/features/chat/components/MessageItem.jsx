@@ -4,7 +4,7 @@ import styles from '../styles/chat.module.css';
 export function MessageItem({ message, currentUser }) {
   const isOutgoing = message.sender === currentUser.id || message.sender_username === currentUser.username;
   
-  // Format the ISO timestamp to a readable time format
+  // Formater l'horodatage ISO dans un format d'heure lisible
   const formatTime = (timestamp) => {
     if (!timestamp) return '';
     const date = new Date(timestamp);

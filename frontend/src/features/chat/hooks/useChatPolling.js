@@ -2,13 +2,13 @@ import { useEffect, useRef } from 'react';
 import { chatApi } from '../services/chatApi';
 
 /**
- * Hook to periodically poll for new messages in a conversation.
+ * Hook pour interroger périodiquement (polling) les nouveaux messages d'une conversation.
  * 
- * @param {string} conversationId - Active conversation ID.
- * @param {object} user - Current user object { id, username, role }.
- * @param {function} onNewMessages - Callback when new messages are fetched.
- * @param {number} intervalMs - Polling interval in ms.
- * @param {boolean} enabled - Toggle polling.
+ * @param {string} conversationId - ID de la conversation active.
+ * @param {object} user - Objet utilisateur actuel { id, username, role }.
+ * @param {function} onNewMessages - Callback appelé lors de la réception de nouveaux messages.
+ * @param {number} intervalMs - Intervalle de polling en ms.
+ * @param {boolean} enabled - Activer/Désactiver le polling.
  */
 export function useChatPolling(
   conversationId, 
@@ -20,7 +20,7 @@ export function useChatPolling(
   const lastMessageIdRef = useRef(null);
   const isFetchingRef = useRef(false);
 
-  // Reset reference if conversation changes
+  // Réinitialiser la référence si la conversation change
   useEffect(() => {
     lastMessageIdRef.current = null;
   }, [conversationId]);
@@ -30,12 +30,12 @@ export function useChatPolling(
 
     isFetchingRef.current = true;
     try {
-      // If we don't have a last message ID yet, we fetch the whole history (afterId is null)
+      // Si nous n'avons pas encore d'ID du dernier message, nous récupérons tout l'historique (afterId est null)
       const afterId = isInitial ? null : lastMessageIdRef.current;
       const messages = await chatApi.getMessages(conversationId, user, afterId);
       
       if (messages.length > 0) {
-        // Track the last message ID to query deltas next time
+        // Suivre l'ID du dernier message pour interroger uniquement les deltas (nouveautés) la prochaine fois
         lastMessageIdRef.current = messages[messages.length - 1].id;
         onNewMessages(messages, isInitial || !afterId);
       }
@@ -49,10 +49,10 @@ export function useChatPolling(
   useEffect(() => {
     if (!enabled || !conversationId || !user) return;
 
-    // Fetch initial chat history immediately
+    // Récupérer l'historique initial du chat immédiatement
     fetchNewMessages(true);
 
-    // Set up polling loop
+    // Configurer la boucle de polling
     const interval = setInterval(() => {
       fetchNewMessages(false);
     }, intervalMs);
